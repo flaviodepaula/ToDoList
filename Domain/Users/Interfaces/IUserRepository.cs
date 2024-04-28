@@ -1,10 +1,11 @@
 ﻿using Domain.Users.Models;
+using Infra.Common.Result;
 
 namespace Domain.Users.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User> AddAsync(User user, CancellationToken cancellationToken);
-        Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken);      
+        Task<Result<User>> AddAsync(User user, CancellationToken cancellationToken);
+        Task<Result<IEnumerable<User>>> GetAllAsync(CancellationToken cancellationToken);      
     }
 }

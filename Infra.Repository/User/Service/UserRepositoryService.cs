@@ -1,6 +1,8 @@
 ﻿using Domain.Users.Interfaces;
+using Infra.Common.Result;
 using Infra.Repository.Context;
 using Infra.Repository.User.Entities;
+using Infra.Repository.User.Errors;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infra.Repository.User.Service
@@ -14,7 +16,7 @@ namespace Infra.Repository.User.Service
             _databaseContext = databaseContext;
         }
 
-        public async Task<Domain.Users.Models.User> AddAsync(Domain.Users.Models.User user, CancellationToken cancellationToken)
+        public async Task<Result<Domain.Users.Models.User>> AddAsync(Domain.Users.Models.User user, CancellationToken cancellationToken)
         {
             using (var transaction = _databaseContext.Database.BeginTransaction())
             {
@@ -34,17 +36,17 @@ namespace Infra.Repository.User.Service
 
                     await transaction.CommitAsync(cancellationToken);
 
-                    return user;
+                    return Result.Sucess(user);
                 }
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    throw ex;
+                    return Result.Failure<Domain.Users.Models.User>(UserRepositoryErrors.UnableToCreateUser(ex.Message));
                 }
             }            
         }
 
-        public async Task<IEnumerable<Domain.Users.Models.User>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<Domain.Users.Models.User>>> GetAllAsync(CancellationToken cancellationToken)
         {
             try
             {
@@ -52,16 +54,18 @@ namespace Infra.Repository.User.Service
                 var users = await _databaseContext.Users.ToListAsync(cancellationToken);
 
 
-                return users.Select(x => new Domain.Users.Models.User() { 
+                var result = users.Select(x => new Domain.Users.Models.User() { 
                                                     Email = x.Email, 
                                                     Id = x.Id,
                                                     Password = x.Password,
                                                     Role = x.Role,
                                                     UserName = x.UserName});
+
+                return Result.Sucess(result);
             }
             catch (Exception ex)
             {
-                throw ex;
+                return Result.Failure<IEnumerable<Domain.Users.Models.User>>(UserRepositoryErrors.UnableToGetUsers(ex.Message));
             }
         }
     }

@@ -19,21 +19,55 @@ namespace WebApi.Controllers
         [HttpPost("AddUser", Name = "AddUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> AddUser(UserDto userDto, CancellationToken cancellationToken)
         {
-            var result = await _userDomain.AddAsync(userDto.ToUserModel(), cancellationToken);
-
-            return Ok(result);
+           
+            try
+            {
+                var result = await _userDomain.AddAsync(userDto.ToUserModel(), cancellationToken);
+                if (result.IsSucess)
+                {
+                    return Ok(result.Value);
+                }
+                else
+                {
+                    return BadRequest(result.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+              
         }
 
         [HttpGet("GetAll", Name = "GetAll")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> GetAllUser(CancellationToken cancellationToken)
         {
-            var result = await _userDomain.GetAllAsync(cancellationToken);
+            try
+            {
+                var result = await _userDomain.GetAllAsync(cancellationToken);
 
-            return Ok(result);
+                if (result.IsSucess)
+                {
+                    return Ok(result.Value);
+                }
+                else
+                {
+                    return BadRequest(result.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
     }
