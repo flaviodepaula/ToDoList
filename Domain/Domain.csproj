@@ -12,4 +12,8 @@
     <Folder Include="ToDo\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Infra.Common\Infra.Common.csproj" />
+  </ItemGroup>
+
 </Project>
