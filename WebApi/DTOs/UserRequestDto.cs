@@ -1,8 +1,6 @@
-﻿using System.Text.Json.Serialization;
-
-namespace WebApi.DTOs
+﻿namespace WebApi.DTOs
 {
-    public record UserDto
+    public record UserRequestDto
     {
         public string UserName { get; set; }
         public string Email { get; set; }

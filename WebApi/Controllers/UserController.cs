@@ -22,7 +22,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult> AddUser(UserDto userDto, CancellationToken cancellationToken)
+        public async Task<ActionResult> AddUser(UserRequestDto userDto, CancellationToken cancellationToken)
         {
            
             try
@@ -30,7 +30,7 @@ namespace WebApi.Controllers
                 var result = await _userDomain.AddAsync(userDto.ToUserModel(), cancellationToken);
                 if (result.IsSucess)
                 {
-                    var newUser = result.Value.ToUserDtoModel();
+                    var newUser = result.Value.ToUserResponseDto();
                     return Ok(newUser);
                 }
                 else
@@ -58,7 +58,9 @@ namespace WebApi.Controllers
 
                 if (result.IsSucess)
                 {
-                    return Ok(result.Value);
+                    var resultModel = result.Value.ToUserResponseDto();
+
+                    return Ok(resultModel);
                 }
                 else
                 {

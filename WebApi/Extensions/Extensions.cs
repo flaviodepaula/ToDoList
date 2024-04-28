@@ -5,7 +5,7 @@ namespace WebApi.Extensions
 {
     public static class Extensions
     {
-        public static User ToUserModel(this UserDto userDto)
+        public static User ToUserModel(this UserRequestDto userDto)
         {
             return new User()
             {
@@ -16,14 +16,19 @@ namespace WebApi.Extensions
             };
         }
 
-        public static UserDto ToUserDtoModel(this User userDto)
+        public static UserResponseDto ToUserResponseDto(this User userDto)
         {
-            return new UserDto()
+            return new UserResponseDto()
             {
                 Email = userDto.Email,
                 Role = userDto.Role,
                 UserName = userDto.UserName,
             };
+        }
+
+        public static IEnumerable<UserResponseDto> ToUserResponseDto(this IEnumerable<User> userDto)
+        {
+            return userDto.Select(x => ToUserResponseDto(x));            
         }
     }
 }
