@@ -9,7 +9,7 @@ namespace Infra.Repository.Support
 {
     public static class ServiceExtensions
     {
-        public static void AddRepositoryExtentions(this IServiceCollection services, IConfiguration configuration)
+        public static void AddRepositoryExtensions(this IServiceCollection services, IConfiguration configuration)
         {
             var strConn = configuration.GetConnectionString("DefaultConnection");
 
@@ -17,7 +17,7 @@ namespace Infra.Repository.Support
                 options.UseMySql(strConn, ServerVersion.AutoDetect(strConn))
             );
 
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserRepository, UserRepositoryService>();
         }
     }
 }
