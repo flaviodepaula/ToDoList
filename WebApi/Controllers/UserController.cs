@@ -25,5 +25,16 @@ namespace WebApi.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("GetAll", Name = "GetAll")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> GetAllUser(CancellationToken cancellationToken)
+        {
+            var result = await _userDomain.GetAllAsync(cancellationToken);
+
+            return Ok(result);
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Domain.Users.Interfaces;
 using Infra.Repository.Context;
 using Infra.Repository.User.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infra.Repository.User.Service
 {
@@ -41,6 +42,27 @@ namespace Infra.Repository.User.Service
                     throw ex;
                 }
             }            
+        }
+
+        public async Task<IEnumerable<Domain.Users.Models.User>> GetAllAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+
+                var users = await _databaseContext.Users.ToListAsync(cancellationToken);
+
+
+                return users.Select(x => new Domain.Users.Models.User() { 
+                                                    Email = x.Email, 
+                                                    Id = x.Id,
+                                                    Password = x.Password,
+                                                    Role = x.Role,
+                                                    UserName = x.UserName});
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

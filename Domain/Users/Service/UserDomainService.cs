@@ -17,5 +17,10 @@ namespace Domain.Users.Service
 
             return await _userRepository.AddAsync(user, cancellationToken);
         }
+
+        public async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken)
+        {
+            return await _userRepository.GetAllAsync(cancellationToken);
+        }
     }
 }
