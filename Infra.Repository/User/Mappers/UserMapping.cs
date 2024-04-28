@@ -10,7 +10,7 @@ namespace Infra.Repository.User.Mappers
         {
             builder.HasKey(tarefa => tarefa.Id);
             builder.Property(tarefa => tarefa.UserName).HasMaxLength(30).HasColumnType("varchar").IsRequired(true);
-            builder.Property(tarefa => tarefa.Password).HasMaxLength(10).HasColumnType("varchar").IsRequired(true);
+            builder.Property(tarefa => tarefa.Password).HasMaxLength(256).HasColumnType("varchar").IsRequired(true);
             builder.Property(tarefa => tarefa.Email).HasMaxLength(50).HasColumnType("varchar").IsRequired(true);
             builder.Property(tarefa => tarefa.Role).HasMaxLength(30).IsRequired(true);
 

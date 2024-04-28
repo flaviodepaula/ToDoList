@@ -41,7 +41,7 @@ namespace Infra.Repository.User.Service
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    return Result.Failure<Domain.Users.Models.User>(UserRepositoryErrors.UnableToCreateUser(ex.Message));
+                    return Result.Failure<Domain.Users.Models.User>(UserRepositoryErrors.UnableToCreateUser(ex.Message, ex.InnerException?.ToString() ?? ""));
                 }
             }            
         }
@@ -65,7 +65,7 @@ namespace Infra.Repository.User.Service
             }
             catch (Exception ex)
             {
-                return Result.Failure<IEnumerable<Domain.Users.Models.User>>(UserRepositoryErrors.UnableToGetUsers(ex.Message));
+                return Result.Failure<IEnumerable<Domain.Users.Models.User>>(UserRepositoryErrors.UnableToGetUsers(ex.Message, ex.InnerException?.ToString() ?? ""));
             }
         }
     }
