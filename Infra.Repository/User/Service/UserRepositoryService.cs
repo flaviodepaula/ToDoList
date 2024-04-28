@@ -27,7 +27,6 @@ namespace Infra.Repository.User.Service
                     {
                         Email = user.Email,
                         Password = user.Password,
-                        Id = user.Id,
                         Role = user.Role,
                         UserName = user.UserName
                     };
@@ -56,8 +55,7 @@ namespace Infra.Repository.User.Service
 
 
                 var result = users.Select(x => new Domain.Users.Models.User() { 
-                                                    Email = x.Email, 
-                                                    Id = x.Id,
+                                                    Email = x.Email,                                                     
                                                     Password = x.Password,
                                                     Role = x.Role,
                                                     UserName = x.UserName});
