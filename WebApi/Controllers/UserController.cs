@@ -30,7 +30,8 @@ namespace WebApi.Controllers
                 var result = await _userDomain.AddAsync(userDto.ToUserModel(), cancellationToken);
                 if (result.IsSucess)
                 {
-                    return Ok(result.Value);
+                    var newUser = result.Value.ToUserDtoModel();
+                    return Ok(newUser);
                 }
                 else
                 {

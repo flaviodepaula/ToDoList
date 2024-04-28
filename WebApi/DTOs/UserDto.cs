@@ -1,4 +1,6 @@
-﻿namespace WebApi.DTOs
+﻿using System.Text.Json.Serialization;
+
+namespace WebApi.DTOs
 {
     public record UserDto
     {

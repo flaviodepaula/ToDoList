@@ -15,5 +15,15 @@ namespace WebApi.Extensions
                 UserName = userDto.UserName,    
             };
         }
+
+        public static UserDto ToUserDtoModel(this User userDto)
+        {
+            return new UserDto()
+            {
+                Email = userDto.Email,
+                Role = userDto.Role,
+                UserName = userDto.UserName,
+            };
+        }
     }
 }
