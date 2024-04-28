@@ -1,7 +1,9 @@
 ﻿using Domain.Users.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.DTOs;
+using System.Net;
+using WebApi.ViewModel;
 using WebApi.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApi.Controllers
 {
@@ -17,21 +19,23 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("AddUser", Name = "AddUser")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(UserResponseViewModel), (int)HttpStatusCode.Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(UnprocessableEntityObjectResult), (int)HttpStatusCode.UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult> AddUser(UserRequestDto userDto, CancellationToken cancellationToken)
-        {
-           
+        
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> AddUser(UserRequestViewModel userDto, CancellationToken cancellationToken)
+        {           
             try
             {
+                if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
+
                 var result = await _userDomain.AddAsync(userDto.ToUserModel(), cancellationToken);
                 if (result.IsSucess)
-                {
-                    var newUser = result.Value.ToUserResponseDto();
-                    return Ok(newUser);
+                {                    
+                    return StatusCode(201);
                 }
                 else
                 {
@@ -46,14 +50,18 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("GetAll", Name = "GetAll")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]        
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetAllUser(CancellationToken cancellationToken)
         {
             try
             {
+                if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
+
                 var result = await _userDomain.GetAllAsync(cancellationToken);
 
                 if (result.IsSucess)

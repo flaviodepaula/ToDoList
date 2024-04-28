@@ -3,6 +3,7 @@ using Infra.Common.Result;
 using Infra.Repository.Context;
 using Infra.Repository.User.Entities;
 using Infra.Repository.User.Errors;
+using Infra.Repository.User.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infra.Repository.User.Service
@@ -66,6 +67,23 @@ namespace Infra.Repository.User.Service
             catch (Exception ex)
             {
                 return Result.Failure<IEnumerable<Domain.Users.Models.User>>(UserRepositoryErrors.UnableToGetUsers(ex.Message, ex.InnerException?.ToString() ?? ""));
+            }
+        }
+
+        public async Task<Result<Domain.Users.Models.User>> GetByEmailAsync(string email, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var user = await _databaseContext.Users.FirstOrDefaultAsync(x=> x.Email.Equals(email), cancellationToken);
+
+                if (user == null)
+                    return Result.Failure<Domain.Users.Models.User>(UserRepositoryErrors.UserDoesNotExist);
+
+                return Result.Sucess(user!.ToDomainModel());
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<Domain.Users.Models.User>(UserRepositoryErrors.GenericErrorOnRetrievingData(ex.Message, ex.InnerException?.ToString() ?? ""));
             }
         }
     }

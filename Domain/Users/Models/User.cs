@@ -1,4 +1,7 @@
-﻿namespace Domain.Users.Models
+﻿using Domain.Users.Errors;
+using Infra.Common.Result;
+
+namespace Domain.Users.Models
 {
     public class User
     {

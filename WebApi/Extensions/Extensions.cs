@@ -1,11 +1,11 @@
 ﻿using Domain.Users.Models;
-using WebApi.DTOs;
+using WebApi.ViewModel;
 
 namespace WebApi.Extensions
 {
     public static class Extensions
     {
-        public static User ToUserModel(this UserRequestDto userDto)
+        public static User ToUserModel(this UserRequestViewModel userDto)
         {
             return new User()
             {
@@ -16,9 +16,9 @@ namespace WebApi.Extensions
             };
         }
 
-        public static UserResponseDto ToUserResponseDto(this User userDto)
+        public static UserResponseViewModel ToUserResponseDto(this User userDto)
         {
-            return new UserResponseDto()
+            return new UserResponseViewModel()
             {
                 Email = userDto.Email,
                 Role = userDto.Role,
@@ -26,7 +26,7 @@ namespace WebApi.Extensions
             };
         }
 
-        public static IEnumerable<UserResponseDto> ToUserResponseDto(this IEnumerable<User> userDto)
+        public static IEnumerable<UserResponseViewModel> ToUserResponseDto(this IEnumerable<User> userDto)
         {
             return userDto.Select(x => ToUserResponseDto(x));            
         }

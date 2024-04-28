@@ -7,5 +7,6 @@ namespace Domain.Users.Interfaces
     {
         Task<Result<User>> AddAsync(User user, CancellationToken cancellationToken);
         Task<Result<IEnumerable<User>>> GetAllAsync(CancellationToken cancellationToken);      
+        Task<Result<User>> GetByEmailAsync(string email, CancellationToken cancellationToken);
     }
 }

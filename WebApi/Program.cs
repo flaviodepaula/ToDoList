@@ -1,5 +1,6 @@
 using Domain.Support;
 using Infra.Repository.Support;
+using WebApi.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddJwtConfiguration(builder.Configuration);
 builder.Services.AddDomainExtensions(builder.Configuration);
 builder.Services.AddRepositoryExtensions(builder.Configuration);
 
@@ -23,6 +25,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

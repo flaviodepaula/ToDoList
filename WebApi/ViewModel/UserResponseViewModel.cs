@@ -1,10 +1,9 @@
-﻿namespace WebApi.DTOs
+﻿namespace WebApi.ViewModel
 {
-    public record UserRequestDto
+    public class UserResponseViewModel
     {
         public string UserName { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; }
         public string Role { get; set; }
     }
 }

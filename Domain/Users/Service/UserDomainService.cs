@@ -1,4 +1,4 @@
-﻿using Domain.Support.Crypto;
+﻿using Domain.Crypto;
 using Domain.Users.Interfaces;
 using Domain.Users.Models;
 using Infra.Common.Result;
