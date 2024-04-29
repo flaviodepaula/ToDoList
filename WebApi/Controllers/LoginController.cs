@@ -3,10 +3,12 @@ using Domain.Authentication.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
-using WebApi.ViewModel;
+using WebApi.ViewModel.Login;
 
 namespace WebApi.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class LoginController : Controller
     {
         private readonly ITokenService _tokenService;
@@ -16,7 +18,7 @@ namespace WebApi.Controllers
             _tokenService = tokenService;
         }
 
-        [HttpPost("Login", Name = "Login")]
+        [HttpPost()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]

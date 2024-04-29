@@ -1,9 +1,9 @@
 ﻿using Domain.Users.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WebApi.ViewModel;
 using WebApi.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using WebApi.ViewModel.Users;
 
 namespace WebApi.Controllers
 {
@@ -18,7 +18,7 @@ namespace WebApi.Controllers
             _userDomain = userDomain;
         }
 
-        [HttpPost("AddUser", Name = "AddUser")]
+        [HttpPost()]
         [ProducesResponseType(typeof(UserResponseViewModel), (int)HttpStatusCode.Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -49,7 +49,7 @@ namespace WebApi.Controllers
               
         }
 
-        [HttpGet("GetAll", Name = "GetAll")]
+        [HttpGet(Name = "GetAll")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]        
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

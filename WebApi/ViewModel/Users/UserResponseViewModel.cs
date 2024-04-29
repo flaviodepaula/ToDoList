@@ -1,4 +1,4 @@
-﻿namespace WebApi.ViewModel
+﻿namespace WebApi.ViewModel.Users
 {
     public class UserResponseViewModel
     {

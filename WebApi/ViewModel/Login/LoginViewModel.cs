@@ -1,4 +1,4 @@
-﻿namespace WebApi.ViewModel
+﻿namespace WebApi.ViewModel.Login
 {
     public record LoginViewModel
     {
