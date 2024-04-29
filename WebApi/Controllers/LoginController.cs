@@ -18,13 +18,13 @@ namespace WebApi.Controllers
             _tokenService = tokenService;
         }
 
-        [HttpPost()]
+        [HttpPost("Login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(typeof(UnprocessableEntityObjectResult), (int)HttpStatusCode.UnprocessableEntity)]
-        public async Task<ActionResult> Login(LoginViewModel userViewModel, CancellationToken cancellationToken)
+      //  [ProducesResponseType(typeof(UnprocessableEntityObjectResult), (int)HttpStatusCode.UnprocessableEntity)]
+        public async Task<ActionResult> Login([FromForm]LoginViewModel userViewModel, CancellationToken cancellationToken)
         {
 
             try

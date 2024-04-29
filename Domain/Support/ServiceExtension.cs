@@ -1,6 +1,8 @@
 ﻿using Domain.Authentication.Interfaces;
 using Domain.Authentication.Services;
 using Domain.Crypto;
+using Domain.Tasks.Interfaces;
+using Domain.Tasks.Service;
 using Domain.Users.Interfaces;
 using Domain.Users.Service;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +16,7 @@ namespace Domain.Support
         {
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ITaskDomain, TaskDomainService>();
             services.AddScoped<IUserDomain, UserDomainService>();
         }
     }
