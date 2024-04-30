@@ -26,7 +26,12 @@ namespace Domain.Tasks.Service
 
         public async Task<Result<IEnumerable<TaskDTO>>> GetAllAsync(ClaimsDTO claims, CancellationToken cancellationToken)
         {
-            return await _taskRepository.GetAllAsync(cancellationToken);
+            _ = Enum.TryParse(claims.Role, out Roles role);
+
+            if (role == Roles.Admin)
+                return await _taskRepository.GetAllAsync(cancellationToken);
+            else
+                return await GetAllByEmailAsync(claims, cancellationToken);
         }
 
         public async Task<Result<IEnumerable<TaskDTO>>> GetAllByEmailAsync(ClaimsDTO claims, CancellationToken cancellationToken)

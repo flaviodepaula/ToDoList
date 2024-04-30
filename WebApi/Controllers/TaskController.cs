@@ -33,7 +33,7 @@ namespace WebApi.Controllers
             if (claims.Email == null)
                 return Unauthorized();
 
-            var result = await _taskDomain.GetAllByEmailAsync(claims, cancellationToken);
+            var result = await _taskDomain.GetAllAsync(claims, cancellationToken);
 
             return Ok(result.Value);
         }
