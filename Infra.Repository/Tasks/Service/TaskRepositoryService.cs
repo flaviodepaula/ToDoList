@@ -1,4 +1,5 @@
-﻿using Domain.Tasks.Interfaces;
+﻿using Domain.Tasks.Enums;
+using Domain.Tasks.Interfaces;
 using Domain.Tasks.Models;
 using Infra.Common.Result;
 using Infra.Repository.Context;
@@ -57,6 +58,7 @@ namespace Infra.Repository.Tasks.Service
                         UserEmail = modeloRequest.UserEmail,
                         Title = modeloRequest.Title,
                         Status = modeloRequest.Status,
+                        CreationDate = modeloRequest.CreationDate,
                         IdTask = modeloRequest.IdTask
                     };
 
@@ -127,7 +129,7 @@ namespace Infra.Repository.Tasks.Service
             if (taskEntities!.Count != 0)
             {
                 foreach (var task in taskEntities)
-                {
+                {                    
                     ListaTarefas.Add(new TaskDTO()
                     {
                         IdTask = task.IdTask,

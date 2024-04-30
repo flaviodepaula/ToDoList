@@ -35,7 +35,7 @@ namespace WebApi.Controllers
 
             var result = await _taskDomain.GetAllAsync(claims, cancellationToken);
 
-            return Ok(result.Value);
+            return Ok(result.Value.ToReturnViewModel());
         }
 
 
@@ -51,7 +51,7 @@ namespace WebApi.Controllers
             var result = await _taskDomain.GetByIdAsync(id, claims, cancellationToken);
 
             if (result.IsSucess)
-                return Ok(result.Value);
+                return Ok(result.Value.ToReturnViewModel());
 
             return BadRequest(result.Error);
 
@@ -91,7 +91,7 @@ namespace WebApi.Controllers
 
             var result = await _taskDomain.UpdateAsync(modeloRequisicao, claims, cancellationToken);
 
-            return Ok(result);
+            return Ok(result.Value);
         }
  
         [NonAction]

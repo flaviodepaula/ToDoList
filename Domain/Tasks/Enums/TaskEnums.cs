@@ -2,8 +2,8 @@
 {
     public enum TaskStatusEnum
     {
-        Concluida,
-        Pendente
+        Pendente = 0,
+        Concluida = 1        
     }
 
     public enum Roles

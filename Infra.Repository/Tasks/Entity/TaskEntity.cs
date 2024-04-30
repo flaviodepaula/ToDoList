@@ -9,7 +9,7 @@ namespace Infra.Repository.Tasks.Entity
         public string Title { get; set; }
         public string Description { get; set; }
         public TaskStatusEnum Status { get; set; }
-        public DateTime CreationDate { get; }        
+        public DateTime CreationDate { get; set; }        
         public string UserEmail { get; set; }
         public UserEntity User { get; set; }
     }
