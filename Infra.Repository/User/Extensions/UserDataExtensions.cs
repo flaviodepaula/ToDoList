@@ -1,9 +1,4 @@
 ﻿using Infra.Repository.User.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infra.Repository.User.Extensions
 {
@@ -13,8 +8,7 @@ namespace Infra.Repository.User.Extensions
         {
             return new Domain.Users.Models.User()
             {
-                Email = userEntity.Email,
-                Id = userEntity.Id,
+                Email = userEntity.Email,                
                 Password = userEntity.Password,
                 Role = userEntity.Role,
                 UserName = userEntity.UserName

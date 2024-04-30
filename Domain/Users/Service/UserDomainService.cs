@@ -19,7 +19,6 @@ namespace Domain.Users.Service
 
         public async Task<Result<User>> AddAsync(User user, CancellationToken cancellationToken)
         {
-            user.Id = Guid.NewGuid();
             string hashedPassword = _passwordHasher.HashPassword(user.Password);
             user.Password = hashedPassword;
 

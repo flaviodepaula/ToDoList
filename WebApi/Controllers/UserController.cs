@@ -1,9 +1,9 @@
 ﻿using Domain.Users.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WebApi.ViewModel;
 using WebApi.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using WebApi.ViewModel.Users;
 
 namespace WebApi.Controllers
 {
@@ -18,7 +18,8 @@ namespace WebApi.Controllers
             _userDomain = userDomain;
         }
 
-        [HttpPost("AddUser", Name = "AddUser")]
+        [HttpPost()]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(UserResponseViewModel), (int)HttpStatusCode.Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -26,7 +27,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> AddUser(UserRequestViewModel userDto, CancellationToken cancellationToken)
+        public async Task<ActionResult> AddAsync(UserRequestViewModel userDto, CancellationToken cancellationToken)
         {           
             try
             {
@@ -49,14 +50,14 @@ namespace WebApi.Controllers
               
         }
 
-        [HttpGet("GetAll", Name = "GetAll")]
+        [HttpGet(Name = "GetAll")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]        
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> GetAllUser(CancellationToken cancellationToken)
+        public async Task<ActionResult> GetAllAsync(CancellationToken cancellationToken)
         {
             try
             {

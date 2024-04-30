@@ -50,8 +50,8 @@ namespace Domain.Authentication.Services
                                             audience: _jwtConfig.Audience,
                                             claims: new[]
                                             {
-                                            new Claim(type: ClaimTypes.Email, userData.Value.Email),
-                                            new Claim(type: ClaimTypes.Role, userData.Value.Role),
+                                                new Claim(type: ClaimTypes.Email, userData.Value.Email),
+                                                new Claim(type: ClaimTypes.Role, userData.Value.Role),
                                             },
                                             expires: DateTime.Now.AddMinutes(_jwtConfig.ExpirationMinutes),
                                             signingCredentials: signInCredentials);

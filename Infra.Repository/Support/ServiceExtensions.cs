@@ -1,5 +1,7 @@
-﻿using Domain.Users.Interfaces;
+﻿using Domain.Tasks.Interfaces;
+using Domain.Users.Interfaces;
 using Infra.Repository.Context;
+using Infra.Repository.Tasks.Service;
 using Infra.Repository.User.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +19,7 @@ namespace Infra.Repository.Support
                 options.UseMySql(strConn, ServerVersion.AutoDetect(strConn))
             );
 
+            services.AddScoped<ITaskRepository, TaskRepositoryService>();
             services.AddScoped<IUserRepository, UserRepositoryService>();
         }
     }
