@@ -8,22 +8,18 @@ using WebApi.ViewModel.Tasks;
 namespace WebApi.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Admin, User")]
     [Route("[controller]")]
     public class TaskController : Controller
     {
-
         private readonly ITaskDomain _taskDomain;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public TaskController(ITaskDomain taskDomain, IHttpContextAccessor httpContextAccessor)
+        public TaskController(ITaskDomain taskDomain)
         {
             _taskDomain = taskDomain;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet("GetAll")]
-        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -32,42 +28,52 @@ namespace WebApi.Controllers
         {
             if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
-            string email = GetUserFromToken();
+            string email = GetEmailFromToken();
             if (email == null)
                 return Unauthorized();
 
             var result = await _taskDomain.GetAllAsync(email, cancellationToken);
 
-            return Ok(result);
+            return Ok(result.Value);
         }
 
 
-        [HttpGet("GetById", Name = "GetById")]
-        public async Task<IActionResult> GetByIdAsync(Guid IdTarefa, CancellationToken cancellationToken)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Domain.Tasks.Models.Task>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
-            var result = await _taskDomain.GetByIdAsync(IdTarefa, cancellationToken);
+            string email = GetEmailFromToken();
+            if (email == null)
+                return Unauthorized();
 
-            return Ok(result);
+            string role = GetRoleFromToken();
+            
+            var result = await _taskDomain.GetByIdAsync(id, email, role, cancellationToken);
+
+            if (result.IsSucess)
+                return Ok(result.Value);
+
+            return BadRequest(result.Error);
+
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-        public async Task<IActionResult> PostAsync([FromBody] TaskRequestAddViewModel viewModel, CancellationToken cancellationToken)
+        public async Task<ActionResult<Domain.Tasks.Models.Task>> PostAsync([FromBody] TaskRequestAddViewModel viewModel, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
-            string email = GetUserFromToken();
+            string email = GetEmailFromToken();
             if (email == null)
                 return Unauthorized();
 
             var modeloRequisicao = viewModel.ToTaskModel(email);
             var result = await _taskDomain.AddAsync(modeloRequisicao, cancellationToken);
 
-            return CreatedAtAction(nameof(PostAsync), result.Value);
+            return Ok(result.Value);
         }
 
         [HttpPut]
@@ -85,17 +91,22 @@ namespace WebApi.Controllers
             return Ok(result);
         }
  
-
         [NonAction]
-        private string GetUserFromToken()
-        {
-            var httpContext = _httpContextAccessor.HttpContext;
-
-            if (httpContext.User.Identity.IsAuthenticated)
-                return httpContext.User.FindFirst(ClaimTypes.Email)?.Value ?? "";
+        private string GetEmailFromToken()
+        { 
+            if(HttpContext.User.Identity != null)
+                return HttpContext.User.Identity.IsAuthenticated ? HttpContext.User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty : string.Empty;
 
             return string.Empty;
         }
 
+        [NonAction]
+        private string GetRoleFromToken()
+        {
+            if (HttpContext.User.Identity != null)
+                return HttpContext.User.Identity.IsAuthenticated ? HttpContext.User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty : string.Empty;
+
+            return string.Empty;
+        }
     }
 }

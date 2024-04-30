@@ -25,7 +25,7 @@ namespace Infra.Repository.Tasks.Service
                 {
                     var taskDto = await _databaseContext.Tasks.FindAsync(modeloRequest.IdTask, cancellationToken);
                     if(taskDto == null) 
-                        return Result.Failure<Domain.Tasks.Models.Task>(TasksErrors.InfoDoesNotExist);
+                        return Result.Failure<Domain.Tasks.Models.Task>(TasksRepositoryErrors.InfoDoesNotExist);
 
                     taskDto.Description = modeloRequest.Description;
                     taskDto.Title = modeloRequest.Title;
@@ -40,7 +40,7 @@ namespace Infra.Repository.Tasks.Service
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    return Result.Failure<Domain.Tasks.Models.Task>(TasksErrors.UnableToCreateTask(ex.Message, ex.InnerException?.ToString() ?? ""));
+                    return Result.Failure<Domain.Tasks.Models.Task>(TasksRepositoryErrors.UnableToCreateTask(ex.Message, ex.InnerException?.ToString() ?? ""));
                 }
             }
         }
@@ -70,25 +70,25 @@ namespace Infra.Repository.Tasks.Service
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    return Result.Failure<Domain.Tasks.Models.Task>(TasksErrors.UnableToCreateTask(ex.Message, ex.InnerException?.ToString() ?? ""));
+                    return Result.Failure<Domain.Tasks.Models.Task>(TasksRepositoryErrors.UnableToCreateTask(ex.Message, ex.InnerException?.ToString() ?? ""));
                 }
             }
         }
    
-        public async Task<Result<TaskDTO>> GetByIdAsync(Guid idTarefa, CancellationToken cancellationToken)
+        public async Task<Result<TaskDTO>> GetByIdAsync(Guid idTask, CancellationToken cancellationToken)
         {
             try
             {
-                var result = await _databaseContext.Tasks.FirstOrDefaultAsync(x => x.IdTask.Equals(idTarefa), cancellationToken);
+                var result = await _databaseContext.Tasks.FirstOrDefaultAsync(x => x.IdTask.Equals(idTask), cancellationToken);
 
                 if (result == null)
-                    return Result.Failure<TaskDTO>(TasksErrors.InfoDoesNotExist);
+                    return Result.Failure<TaskDTO>(TasksRepositoryErrors.InfoDoesNotExist);
 
                 return Result.Sucess(result.ToTasksDTO());
             }
             catch (Exception ex)
             {
-                return Result.Failure<TaskDTO>(TasksErrors.RequestToDatabaseFailed(ex.Message));
+                return Result.Failure<TaskDTO>(TasksRepositoryErrors.RequestToDatabaseFailed(ex.Message));
             }
         }
 
@@ -120,7 +120,7 @@ namespace Infra.Repository.Tasks.Service
             }
             catch (Exception ex)
             {
-                return Result.Failure<IEnumerable<TaskDTO>>(TasksErrors.RequestToDatabaseFailed(ex.Message));
+                return Result.Failure<IEnumerable<TaskDTO>>(TasksRepositoryErrors.RequestToDatabaseFailed(ex.Message));
             }
         }
     }

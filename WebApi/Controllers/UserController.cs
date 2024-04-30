@@ -19,6 +19,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost()]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(UserResponseViewModel), (int)HttpStatusCode.Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -26,7 +27,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> AddUser(UserRequestViewModel userDto, CancellationToken cancellationToken)
+        public async Task<ActionResult> AddAsync(UserRequestViewModel userDto, CancellationToken cancellationToken)
         {           
             try
             {
@@ -56,7 +57,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> GetAllUser(CancellationToken cancellationToken)
+        public async Task<ActionResult> GetAllAsync(CancellationToken cancellationToken)
         {
             try
             {

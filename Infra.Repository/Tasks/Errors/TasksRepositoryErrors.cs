@@ -2,7 +2,7 @@
 
 namespace Infra.Repository.Tasks.Errors
 {
-    public static class TasksErrors
+    public static class TasksRepositoryErrors
     {
         public static Error UnableToCreateTask(string errorMessage, string innerException)
         {
