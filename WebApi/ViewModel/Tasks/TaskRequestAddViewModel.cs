@@ -1,4 +1,4 @@
-﻿using Domain.Tasks.Enum;
+﻿using Domain.Tasks.Enums;
 
 namespace WebApi.ViewModel.Tasks
 {
@@ -6,7 +6,7 @@ namespace WebApi.ViewModel.Tasks
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public ToDoStatusEnum Status { get; set; }
+        public TaskStatusEnum Status { get; set; }
        
     }
 }

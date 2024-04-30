@@ -1,4 +1,4 @@
-﻿using Domain.Tasks.Enum;
+﻿using Domain.Tasks.Enums;
 
 namespace Domain.Tasks.Models
 {
@@ -7,11 +7,11 @@ namespace Domain.Tasks.Models
         public Guid IdTask { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public ToDoStatusEnum Status { get; set; }
+        public TaskStatusEnum Status { get; set; }
         public DateTime CreationDate { get; set; }
         public string UserEmail { get; set; }
 
-        public Task(string titulo, string descricao, ToDoStatusEnum status, string userEmail)
+        public Task(string titulo, string descricao, TaskStatusEnum status, string userEmail)
         {
             IdTask = Guid.NewGuid();
             Title = titulo;

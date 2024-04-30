@@ -1,4 +1,5 @@
-﻿using Domain.Tasks.Interfaces;
+﻿using Domain.Authentication;
+using Domain.Tasks.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -28,11 +29,11 @@ namespace WebApi.Controllers
         {
             if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
-            string email = GetEmailFromToken();
-            if (email == null)
+            var claims = LoadClaimsValues();
+            if (claims.Email == null)
                 return Unauthorized();
 
-            var result = await _taskDomain.GetAllAsync(email, cancellationToken);
+            var result = await _taskDomain.GetAllByEmailAsync(claims, cancellationToken);
 
             return Ok(result.Value);
         }
@@ -43,13 +44,11 @@ namespace WebApi.Controllers
         {
             if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
-            string email = GetEmailFromToken();
-            if (email == null)
+            var claims = LoadClaimsValues();
+            if (claims.Email == null)
                 return Unauthorized();
-
-            string role = GetRoleFromToken();
-            
-            var result = await _taskDomain.GetByIdAsync(id, email, role, cancellationToken);
+                        
+            var result = await _taskDomain.GetByIdAsync(id, claims, cancellationToken);
 
             if (result.IsSucess)
                 return Ok(result.Value);
@@ -66,11 +65,11 @@ namespace WebApi.Controllers
         {
             if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
-            string email = GetEmailFromToken();
-            if (email == null)
+            var claims = LoadClaimsValues();
+            if (claims.Email == null)
                 return Unauthorized();
 
-            var modeloRequisicao = viewModel.ToTaskModel(email);
+            var modeloRequisicao = viewModel.ToTaskModel(claims.Email);
             var result = await _taskDomain.AddAsync(modeloRequisicao, cancellationToken);
 
             return Ok(result.Value);
@@ -86,27 +85,31 @@ namespace WebApi.Controllers
 
             var modeloRequisicao = viewModel.ToTaskModel();
 
-            var result = await _taskDomain.UpdateAsync(modeloRequisicao, cancellationToken);
+            var claims = LoadClaimsValues();
+            if (claims.Email == null)
+                return Unauthorized();
+
+            var result = await _taskDomain.UpdateAsync(modeloRequisicao, claims, cancellationToken);
 
             return Ok(result);
         }
  
         [NonAction]
-        private string GetEmailFromToken()
-        { 
-            if(HttpContext.User.Identity != null)
-                return HttpContext.User.Identity.IsAuthenticated ? HttpContext.User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty : string.Empty;
-
-            return string.Empty;
-        }
-
-        [NonAction]
-        private string GetRoleFromToken()
+        private ClaimsDTO LoadClaimsValues()
         {
+            var claims = new ClaimsDTO("","");
             if (HttpContext.User.Identity != null)
-                return HttpContext.User.Identity.IsAuthenticated ? HttpContext.User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty : string.Empty;
+            {
+                if (!HttpContext.User.Identity.IsAuthenticated)
+                {
+                    return claims;
+                }
+                claims.Email = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
+                claims.Role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty;
+            }
 
-            return string.Empty;
+            return claims;
         }
+
     }
 }

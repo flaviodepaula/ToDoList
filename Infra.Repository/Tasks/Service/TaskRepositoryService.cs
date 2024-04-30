@@ -92,36 +92,55 @@ namespace Infra.Repository.Tasks.Service
             }
         }
 
-        public async Task<Result<IEnumerable<TaskDTO>>> GetAllAsync(string userEmail, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<TaskDTO>>> GetAllByEmailAsync(string userEmail, CancellationToken cancellationToken)
         {
             try
             {
-                var tarefas = await _databaseContext.Tasks.Where(p => p.UserEmail.Equals(userEmail)).ToListAsync(cancellationToken);
+                var tasks = await _databaseContext.Tasks.Where(p => p.UserEmail.Equals(userEmail)).OrderBy(x=> x.UserEmail).ToListAsync(cancellationToken);
 
-                List<TaskDTO> ListaTarefas = new List<TaskDTO>();
-
-                if (tarefas.Count != 0)
-                {
-                    foreach (var tarefa in tarefas)
-                    {
-                        ListaTarefas.Add(new TaskDTO()
-                        {
-                            IdTask = tarefa.IdTask,
-                            CreationDate = tarefa.CreationDate,
-                            Description = tarefa.Description,
-                            UserEmail = tarefa.UserEmail,
-                            Status = tarefa.Status,
-                            Title = tarefa.Title
-                        });
-                    }
-                }
-
-                return Result.Sucess(ListaTarefas.AsEnumerable());
+                return LoadData(tasks);
             }
             catch (Exception ex)
             {
                 return Result.Failure<IEnumerable<TaskDTO>>(TasksRepositoryErrors.RequestToDatabaseFailed(ex.Message));
             }
+        }
+
+        public async Task<Result<IEnumerable<TaskDTO>>> GetAllAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var tasks = await _databaseContext.Tasks.OrderBy(x => x.UserEmail).ToListAsync(cancellationToken);
+
+                return LoadData(tasks);
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<IEnumerable<TaskDTO>>(TasksRepositoryErrors.RequestToDatabaseFailed(ex.Message));
+            }
+        }
+
+        private Result<IEnumerable<TaskDTO>> LoadData(List<TaskEntity>? taskEntities)
+        {
+            List<TaskDTO> ListaTarefas = [];
+
+            if (taskEntities!.Count != 0)
+            {
+                foreach (var task in taskEntities)
+                {
+                    ListaTarefas.Add(new TaskDTO()
+                    {
+                        IdTask = task.IdTask,
+                        CreationDate = task.CreationDate,
+                        Description = task.Description,
+                        UserEmail = task.UserEmail,
+                        Status = task.Status,
+                        Title = task.Title
+                    });
+                }
+            }
+
+            return Result.Sucess(ListaTarefas.AsEnumerable());
         }
     }
 }

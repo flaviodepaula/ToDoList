@@ -1,4 +1,6 @@
-﻿using Domain.Tasks.Errors;
+﻿using Domain.Authentication;
+using Domain.Tasks.Enums;
+using Domain.Tasks.Errors;
 using Domain.Tasks.Interfaces;
 using Domain.Tasks.Models;
 using Infra.Common.Result;
@@ -22,25 +24,31 @@ namespace Domain.Tasks.Service
             return await _taskRepository.AddAsync(requestModel, cancellationToken);
         }
 
-        public async Task<Result<IEnumerable<TaskDTO>>> GetAllAsync(string userEmail, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<TaskDTO>>> GetAllAsync(ClaimsDTO claims, CancellationToken cancellationToken)
         {
-            return await _taskRepository.GetAllAsync(userEmail, cancellationToken);
+            return await _taskRepository.GetAllAsync(cancellationToken);
         }
 
-        public async Task<Result<TaskDTO>> GetByIdAsync(Guid idTask, string userEmail, string role, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<TaskDTO>>> GetAllByEmailAsync(ClaimsDTO claims, CancellationToken cancellationToken)
+        {
+            return await _taskRepository.GetAllByEmailAsync(claims.Email, cancellationToken);
+        }
+
+        public async Task<Result<TaskDTO>> GetByIdAsync(Guid idTask, ClaimsDTO claims, CancellationToken cancellationToken)
         {            
             var result = await _taskRepository.GetByIdAsync(idTask, cancellationToken);
 
             if (result.IsFailure)
                 return Result.Failure<TaskDTO>(result.Error);
-            
-            if(role != "Admin" && result.Value.UserEmail != userEmail)
+
+            _ = Enum.TryParse(claims.Role, out Roles role);
+            if(role != Roles.Admin && result.Value.UserEmail != claims.Email)
                 return Result.Failure<TaskDTO>(TasksDomainErrors.TaskNaoPertenceAoEmail);
             
             return result;
         }
 
-        public async Task<Result<Models.Task>> UpdateAsync(Models.Task requestModel, CancellationToken cancellationToken)
+        public async Task<Result<Models.Task>> UpdateAsync(Models.Task requestModel, ClaimsDTO claims, CancellationToken cancellationToken)
         {
             return await _taskRepository.UpdateAsync(requestModel, cancellationToken);
         }
