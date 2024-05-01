@@ -22,11 +22,11 @@ $ docker-compose up -d
   
 # Execute the migrations - My database is hosted on Docker/WSL(Ubuntu)
 
-$ dotnet ef database update -s .\WebApi.csproj  -p .\Infra.Repository\ -v
+$ dotnet ef database update -s .\WebApi\WebApi.csproj  -p .\Infra.Repository\ -v
  
 # Run the API 
  
-$  dotnet run --project .\WebApi.csproj
+$  dotnet run --project .\WebApi\WebApi.csproj
  
 # The application will be run on port 5000
  
