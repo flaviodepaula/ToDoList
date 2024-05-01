@@ -3,6 +3,7 @@ using Domain.Authentication.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
+using WebApi.Errors.WebApi;
 using WebApi.ViewModel.Login;
 
 namespace WebApi.Controllers
@@ -23,7 +24,6 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-      //  [ProducesResponseType(typeof(UnprocessableEntityObjectResult), (int)HttpStatusCode.UnprocessableEntity)]
         public async Task<ActionResult> Login([FromForm]LoginViewModel userViewModel, CancellationToken cancellationToken)
         {
 
@@ -50,7 +50,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+                return StatusCode(500, LoginWebApiErrors.GenericError(ex.Message, ex.InnerException.ToString()));
             }
 
         }

@@ -11,5 +11,7 @@ namespace Domain.Tasks.Interfaces
         Task<Result<IEnumerable<TaskDTO>>> GetAllAsync(ClaimsDTO claims, CancellationToken cancellationToken);
         Task<Result<Models.Task>> AddAsync(Models.Task requestModel, CancellationToken cancellationToken);
         Task<Result<Models.Task>> UpdateAsync(Models.Task requestModel, ClaimsDTO claims, CancellationToken cancellationToken);
+        Task<Result<bool>> DeleteAsync(Guid id, ClaimsDTO claims, CancellationToken cancellationToken);
+
     }
 }

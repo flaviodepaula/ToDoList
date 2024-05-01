@@ -4,6 +4,7 @@ using System.Net;
 using WebApi.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using WebApi.ViewModel.Users;
+using WebApi.Errors;
 
 namespace WebApi.Controllers
 {
@@ -24,8 +25,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(UnprocessableEntityObjectResult), (int)HttpStatusCode.UnprocessableEntity)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]        
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> AddAsync(UserRequestViewModel userDto, CancellationToken cancellationToken)
         {           
@@ -45,7 +45,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+                return StatusCode(500, UserWebApiErrors.GenericError(ex.Message, ex.InnerException.ToString()));
             }
               
         }
@@ -78,9 +78,8 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+                return StatusCode(500, UserWebApiErrors.GenericError(ex.Message, ex.InnerException.ToString()));
             }
         }
-
     }
 }
