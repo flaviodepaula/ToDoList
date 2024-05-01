@@ -3,6 +3,7 @@ using Domain.Authentication.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
+using WebApi.Errors.WebApi;
 using WebApi.ViewModel.Login;
 
 namespace WebApi.Controllers
@@ -49,7 +50,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+                return StatusCode(500, LoginWebApiErrors.GenericError(ex.Message, ex.InnerException.ToString()));
             }
 
         }

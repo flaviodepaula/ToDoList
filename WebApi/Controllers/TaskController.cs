@@ -3,6 +3,8 @@ using Domain.Tasks.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using WebApi.Errors;
+using WebApi.Errors.WebApi;
 using WebApi.Extensions;
 using WebApi.ViewModel.Tasks;
 
@@ -27,33 +29,47 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
+            try
+            {
+                if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
-            var claims = LoadClaimsValues();
-            if (claims.Email == null)
-                return Unauthorized();
+                var claims = LoadClaimsValues();
+                if (claims.Email == null)
+                    return Unauthorized();
 
-            var result = await _taskDomain.GetAllAsync(claims, cancellationToken);
+                var result = await _taskDomain.GetAllAsync(claims, cancellationToken);
 
-            return Ok(result.Value.ToReturnViewModel());
+                return Ok(result.Value.ToReturnViewModel());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, TaskWebApiErrors.GenericError(ex.Message, ex.InnerException.ToString()));
+            }
         }
 
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Domain.Tasks.Models.Task>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
+            try
+            {
+                if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
-            var claims = LoadClaimsValues();
-            if (claims.Email == null)
-                return Unauthorized();
-                        
-            var result = await _taskDomain.GetByIdAsync(id, claims, cancellationToken);
+                var claims = LoadClaimsValues();
+                if (claims.Email == null)
+                    return Unauthorized();
 
-            if (result.IsSucess)
-                return Ok(result.Value.ToReturnViewModel());
+                var result = await _taskDomain.GetByIdAsync(id, claims, cancellationToken);
 
-            return BadRequest(result.Error);
+                if (result.IsSucess)
+                    return Ok(result.Value.ToReturnViewModel());
+
+                return BadRequest(result.Error);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, TaskWebApiErrors.GenericError(ex.Message, ex.InnerException.ToString()));
+            }
 
         }
 
@@ -63,16 +79,23 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<ActionResult<Domain.Tasks.Models.Task>> PostAsync([FromBody] TaskRequestAddViewModel viewModel, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
+            try
+            {
+                if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
-            var claims = LoadClaimsValues();
-            if (claims.Email == null)
-                return Unauthorized();
+                var claims = LoadClaimsValues();
+                if (claims.Email == null)
+                    return Unauthorized();
 
-            var modeloRequisicao = viewModel.ToTaskModel(claims.Email);
-            var result = await _taskDomain.AddAsync(modeloRequisicao, cancellationToken);
+                var modeloRequisicao = viewModel.ToTaskModel(claims.Email);
+                var result = await _taskDomain.AddAsync(modeloRequisicao, cancellationToken);
 
-            return Ok(result.Value);
+                return Ok(result.Value);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, TaskWebApiErrors.GenericError(ex.Message, ex.InnerException.ToString()));
+            }
         }
 
         [HttpPut]
@@ -81,17 +104,24 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> PutAsync([FromBody] TaskRequestUpdateViewModel viewModel, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
+            try
+            {
+                if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
 
-            var modeloRequisicao = viewModel.ToTaskModel();
+                var modeloRequisicao = viewModel.ToTaskModel();
 
-            var claims = LoadClaimsValues();
-            if (claims.Email == null)
-                return Unauthorized();
+                var claims = LoadClaimsValues();
+                if (claims.Email == null)
+                    return Unauthorized();
 
-            var result = await _taskDomain.UpdateAsync(modeloRequisicao, claims, cancellationToken);
+                var result = await _taskDomain.UpdateAsync(modeloRequisicao, claims, cancellationToken);
 
-            return Ok(result.Value);
+                return Ok(result.Value);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, TaskWebApiErrors.GenericError(ex.Message, ex.InnerException.ToString()));
+            }
         }
  
         [NonAction]

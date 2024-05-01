@@ -4,6 +4,7 @@ using System.Net;
 using WebApi.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using WebApi.ViewModel.Users;
+using WebApi.Errors;
 
 namespace WebApi.Controllers
 {
@@ -45,7 +46,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+                return StatusCode(500, UserWebApiErrors.GenericError(ex.Message, ex.InnerException.ToString()));
             }
               
         }
@@ -78,7 +79,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+                return StatusCode(500, UserWebApiErrors.GenericError(ex.Message, ex.InnerException.ToString()));
             }
         }
 
