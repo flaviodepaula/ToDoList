@@ -43,7 +43,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, TaskWebApiErrors.GenericError(ex.Message, ex.InnerException.ToString()));
+                return StatusCode(500, TaskWebApiErrors.GenericError(ex.Message));
             }
         }
 
@@ -68,7 +68,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, TaskWebApiErrors.GenericError(ex.Message, ex.InnerException.ToString()));
+                return StatusCode(500, TaskWebApiErrors.GenericError(ex.Message));
             }
 
         }
@@ -94,7 +94,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, TaskWebApiErrors.GenericError(ex.Message, ex.InnerException.ToString()));
+                return StatusCode(500, TaskWebApiErrors.GenericError(ex.Message));
             }
         }
 
@@ -115,15 +115,44 @@ namespace WebApi.Controllers
                     return Unauthorized();
 
                 var result = await _taskDomain.UpdateAsync(modeloRequisicao, claims, cancellationToken);
+                if(result.IsSucess)
+                    return Ok(result.Value);
 
-                return Ok(result.Value);
+                return BadRequest(result.Error);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, TaskWebApiErrors.GenericError(ex.Message, ex.InnerException.ToString()));
+                return StatusCode(500, TaskWebApiErrors.GenericError(ex.Message));
             }
         }
- 
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        public async Task<IActionResult> DeleteAsync([FromQuery] Guid Id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
+
+                var claims = LoadClaimsValues();
+                if (claims.Email == null)
+                    return Unauthorized();
+
+                var result = await _taskDomain.DeleteAsync(Id, claims, cancellationToken);
+
+                if (result.IsSucess)
+                    return Ok(result.Value);
+
+                return BadRequest(result.Error);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, TaskWebApiErrors.GenericError(ex.Message));
+            }
+        }
+
         [NonAction]
         private ClaimsDTO LoadClaimsValues()
         {

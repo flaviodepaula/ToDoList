@@ -9,6 +9,13 @@ namespace Infra.Repository.Tasks.Errors
             return new("Repository.Tasks.Errors.UnableToCreateTask", $"Não foi possivel criar a Tarefa. Tente novamente. ErrorMessage: {errorMessage}. InnerException: {innerException}");
         }
 
+        public static readonly Error UnableToRemove = new("Repository.Tasks.Errors.UnableToRemove", "Erro ao remover Task do banco de dados.");
+
+        public static Error GenericErrorOnDelete(string errorMessage)
+        {
+            return new Error("Repository.Tasks.Errors.GenericErrorOnDelete", $"Erro ao remover Task do banco de dados. Message: {errorMessage}.");
+        }
+
         public static Error RequestToDatabaseFailed(string errorMessage)
         {
             return new Error("Repository.Tasks.Errors.RequestToDatabaseFailed", $"Requisição para o banco de dados falhou. Message: {errorMessage}.");

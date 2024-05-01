@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infra.Repository.Tasks.Service
 {
-    internal class TaskRepositoryService : ITaskRepository
+    public class TaskRepositoryService : ITaskRepository
     {
         private readonly DatabaseContext _databaseContext;
         public TaskRepositoryService(DatabaseContext databaseContext)
@@ -25,7 +25,7 @@ namespace Infra.Repository.Tasks.Service
                 try
                 {
                     var taskDto = await _databaseContext.Tasks.FindAsync(modeloRequest.IdTask, cancellationToken);
-                    if(taskDto == null) 
+                    if (taskDto == null)
                         return Result.Failure<Domain.Tasks.Models.Task>(TasksRepositoryErrors.InfoDoesNotExist);
 
                     taskDto.Description = modeloRequest.Description;
@@ -143,6 +143,32 @@ namespace Infra.Repository.Tasks.Service
             }
 
             return Result.Sucess(ListaTarefas.AsEnumerable());
+        }
+
+        public async Task<Result<bool>> DeleteAsync(Guid idTask, CancellationToken cancellationToken)
+        {
+            try
+            {
+                TaskEntity taskToBeDeleted = await _databaseContext.Tasks.FindAsync(idTask);
+
+                if (taskToBeDeleted != null)
+                {
+                    _databaseContext.Tasks.Remove(taskToBeDeleted);
+
+                    var result = await _databaseContext.SaveChangesAsync(cancellationToken);
+
+                    if (result > 0)
+                        return Result.Sucess(true);
+                    else
+                        return Result.Failure<bool>(TasksRepositoryErrors.UnableToRemove);
+                }
+
+                return Result.Failure<bool>(TasksRepositoryErrors.InfoDoesNotExist);
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<bool>(TasksRepositoryErrors.GenericErrorOnDelete(ex.Message));
+            }
         }
     }
 }

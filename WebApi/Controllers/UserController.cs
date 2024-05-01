@@ -25,8 +25,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(UnprocessableEntityObjectResult), (int)HttpStatusCode.UnprocessableEntity)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]        
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> AddAsync(UserRequestViewModel userDto, CancellationToken cancellationToken)
         {           
@@ -82,6 +81,5 @@ namespace WebApi.Controllers
                 return StatusCode(500, UserWebApiErrors.GenericError(ex.Message, ex.InnerException.ToString()));
             }
         }
-
     }
 }
